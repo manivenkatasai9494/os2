@@ -1,0 +1,115 @@
+#include <stdio.h>
+#include <limits.h>
+
+// Function to check if a page is in the frame
+int isPageInFrame(int frames[], int numFrames, int page) {
+    for (int i = 0; i < numFrames; i++) {
+        if (frames[i] == page) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+// Function to find the frame that will not be used for the longest time in future
+int findOptimalReplacement(int frames[], int numFrames, int pageRequests[], int numRequests, int currentIndex) {
+    int farthest = currentIndex;
+    int frameIndex = -1;
+    for (int i = 0; i < numFrames; i++) {
+        int j;
+        for (j = currentIndex; j < numRequests; j++) {
+            if (frames[i] == pageRequests[j]) {
+                if (j > farthest) {
+                    farthest = j;
+                    frameIndex = i;
+                }
+                break;
+            }
+        }
+        if (j == numRequests) {
+            return i;
+        }
+    }
+    return (frameIndex == -1) ? 0 : frameIndex;
+}
+
+// Function to print the current state of the frames
+void printFrames(int frames[], int numFrames) {
+    for (int i = 0; i < numFrames; i++) {
+        if (frames[i] == -1) {
+            printf("- ");
+        } else {
+            printf("%d ", frames[i]);
+        }
+    }
+    printf("\n");
+}
+
+int main() {
+    int numFrames, numRequests;
+    int pageFaults = 0;
+
+    // Input the number of frames
+    printf("Enter the number of frames: ");
+    scanf("%d", &numFrames);
+
+    // Initialize frames
+    int frames[numFrames];
+    for (int i = 0; i < numFrames; i++) {
+        frames[i] = -1;
+    }
+
+    // Input the number of page requests
+    printf("Enter the number of page requests: ");
+    scanf("%d", &numRequests);
+
+    // Input the page requests
+    int pageRequests[numRequests];
+    printf("Enter the page requests: ");
+    for (int i = 0; i < numRequests; i++) {
+        scanf("%d", &pageRequests[i]);
+    }
+
+    // Process each page request
+    for (int i = 0; i < numRequests; i++) {
+        int page = pageRequests[i];
+
+        // Check if the page is already in the frame
+        if (!isPageInFrame(frames, numFrames, page)) {
+            // Page fault occurs
+            pageFaults++;
+
+            // If there is space in the frames, add the page
+            int added = 0;
+            for (int j = 0; j < numFrames; j++) {
+                if (frames[j] == -1) {
+                    frames[j] = page;
+                    added = 1;
+                    break;
+                }
+            }
+
+            // If no space is available, replace the optimal page
+            if (!added) {
+                int replaceIndex = findOptimalReplacement(frames, numFrames, pageRequests, numRequests, i + 1);
+                frames[replaceIndex] = page;
+            }
+        }
+
+        // Print the current state of frames
+        printFrames(frames, numFrames);
+    }
+
+    printf("Total page faults: %d\n", pageFaults);
+
+    return 0;
+}
+/*Number of frames: 3
+Number of page requests: 12
+Page requests: 0 4 1 4 2 4 3 4 5 4 0 3
+Inputs:
+mathematica
+Copy code
+Enter the number of frames: 3
+Enter the number of page requests: 12
+Enter the page requests: 0 4 1 4 2 4 3 4 5 4 0 3*/

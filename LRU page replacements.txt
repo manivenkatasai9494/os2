@@ -1,0 +1,78 @@
+#include <stdio.h>
+
+#define MAX_FRAMES 3
+#define MAX_PAGES 10
+
+int frames[MAX_FRAMES];
+int pageReferences[MAX_PAGES];
+int pageFaults = 0;
+
+void initializeFrames() {
+    for (int i = 0; i < MAX_FRAMES; i++) {
+        frames[i] = -1;
+    }
+}
+
+int isPageInFrames(int page) {
+    for (int i = 0; i < MAX_FRAMES; i++) {
+        if (frames[i] == page) {
+            return 1; 
+        }
+    }
+    return 0; 
+}
+
+int getLRUPage() {
+    int lruIndex = 0;
+    for (int i = 1; i < MAX_FRAMES; i++) {
+        if (pageReferences[frames[i]] < pageReferences[frames[lruIndex]]) {
+            lruIndex = i;
+        }
+    }
+    return lruIndex;
+}
+
+void displayFrames() {
+    for (int i = 0; i < MAX_FRAMES; i++) {
+        if (frames[i] == -1) {
+            printf("- ");
+        } else {
+            printf("%d ", frames[i]);
+        }
+    }
+    printf("\n");
+}
+
+int main() {
+    initializeFrames();
+
+    printf("Enter the sequence of page references (0-9):\n");
+    for (int i = 0; i < MAX_PAGES; i++) {
+        scanf("%d", &pageReferences[i]);
+    }
+
+    for (int i = 0; i < MAX_PAGES; i++) {
+        if (!isPageInFrames(pageReferences[i])) {
+            int lruIndex = getLRUPage();
+            frames[lruIndex] = pageReferences[i];
+            pageFaults++;
+            printf("Page fault at reference %d: ", pageReferences[i]);
+            displayFrames();
+        } else {
+            printf("Page hit at reference %d: ", pageReferences[i]);
+            displayFrames();
+        }
+    }
+
+    printf("Total page faults: %d\n", pageFaults);
+
+    return 0;
+}
+
+/*Number of frames: 3 (as defined by MAX_FRAMES)
+Page reference sequence: 0 4 1 4 2 4 3 4 5 4
+Inputs:
+java
+Copy code
+Enter the sequence of page references (0-9):
+0 4 1 4 2 4 3 4 5 4*/

@@ -1,0 +1,55 @@
+# include <stdio.h>
+int main()
+{
+	int n,at[10],bt[10],wt[10],tat[10],ct[10],sum,i,j,k;
+	float totaltat =0,totalwt=0;
+	printf("Enter the total no of processes\n");
+	scanf(" %d" ,&n);
+	printf("Enter the process arrival time and Brust time\n");
+	for(i=0;i<n;i++)
+	{
+		printf("Enter the arrival time of the process[%d]:" , i+1);
+		scanf(" %d" , &at[i]);
+		printf("Enter the burst time of the process[%d]:",i+1);
+		scanf(" %d" , &bt[i]);
+	}
+	sum = at[0];
+	for (j=0;j<n; j++)
+	{
+		sum+=bt[j];
+		ct[j]=sum;
+	}
+	for(k=0;k<n;k++)
+	{
+		tat[k]=ct[k]-at[k];
+		totaltat+=tat[k];
+	}
+	for (k=0;k<n;k++)
+	{
+		wt[k]=tat[k]-bt[k];
+		totalwt+=wt[k];
+	}
+	printf("\nProcess\tAT\tBT\tCT\tTAT\tWT\n");
+	for(i=0;i<n;i++)
+	{
+		printf("\n P%d\t%d\t%d\t%d\t%d\t%d\t",i+1,at[i],bt[i],ct[i],tat[i],wt[i]);
+	}
+	printf("\n Average TurnAroudTime : %f\n",totaltat/n);
+	printf("\n Average Waiting Time : %f\n",totalwt/n);
+	return 0;
+}
+/*Number of processes: 3
+Process arrival times: 0, 2, 4
+Process burst times: 5, 3, 2
+Inputs:
+less
+Copy code
+Enter the total no of processes
+3
+Enter the process arrival time and Burst time
+Enter the arrival time of the process[1]: 0
+Enter the burst time of the process[1]: 5
+Enter the arrival time of the process[2]: 2
+Enter the burst time of the process[2]: 3
+Enter the arrival time of the process[3]: 4
+Enter the burst time of the process[3]: 2*/

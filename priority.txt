@@ -1,0 +1,76 @@
+#include <stdio.h>
+
+int main() {
+    int n, i, j, temp, sum_wait = 0, sum_turnaround = 0;
+    float avg_wait, avg_turnaround;
+    int priority[20], bt[20], wt[20], tat[20];
+
+    printf("Enter the number of processes: ");
+    scanf("%d", &n);
+
+    // Input burst times and priorities for each process
+    printf("Enter burst times and priorities for each process:\n");
+    for (i = 0; i < n; i++) {
+        printf("Process %d: ", i + 1);
+        scanf("%d%d", &bt[i], &priority[i]);
+    }
+
+    // Sort processes based on priority (ascending order)
+    for (i = 0; i < n - 1; i++) {
+        for (j = i + 1; j < n; j++) {
+            if (priority[i] > priority[j]) {
+                temp = priority[i];
+                priority[i] = priority[j];
+                priority[j] = temp;
+                temp = bt[i];
+                bt[i] = bt[j];
+                bt[j] = temp;
+            }
+        }
+    }
+
+    // Calculate waiting time for each process
+    wt[0] = 0; // Waiting time for first process is zero
+    for (i = 1; i < n; i++) {
+        wt[i] = wt[i - 1] + bt[i - 1];
+        sum_wait += wt[i];
+    }
+
+    // Calculate turnaround time for each process
+    for (i = 0; i < n; i++) {
+        tat[i] = wt[i] + bt[i];
+        sum_turnaround += tat[i];
+    }
+
+    // Calculate average waiting time and average turnaround time
+    avg_wait = (float)sum_wait / n;
+    avg_turnaround = (float)sum_turnaround / n;
+
+    // Print process details
+    printf("\nProcess\tBT\tPriority\tWT\tTAT\n");
+    for (i = 0; i < n; i++) {
+        printf("P%d\t%d\t%d\t\t%d\t%d\n", i + 1, bt[i], priority[i], wt[i], tat[i]);
+    }
+
+    // Print average waiting time and average turnaround time
+    printf("\nAverage Waiting Time: %.2f\n", avg_wait);
+    printf("Average Turnaround Time: %.2f\n", avg_turnaround);
+
+    return 0;
+}/*Number of processes: 5
+Burst times and priorities:
+Process 1: BT = 6, Priority = 3
+Process 2: BT = 4, Priority = 1
+Process 3: BT = 7, Priority = 2
+Process 4: BT = 5, Priority = 4
+Process 5: BT = 3, Priority = 5
+Inputs:
+yaml
+Copy code
+Enter the number of processes: 5
+Enter burst times and priorities for each process:
+Process 1: 6 3
+Process 2: 4 1
+Process 3: 7 2
+Process 4: 5 4
+Process 5: 3 5*/

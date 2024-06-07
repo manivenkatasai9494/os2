@@ -1,0 +1,46 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define NUM_SEGMENTS 3
+
+typedef struct {
+    int segmentNumber;
+    int base;
+    int limit;
+} SegmentTableEntry;
+
+void initializeSegmentTable(SegmentTableEntry* segmentTable) {
+    for (int i = 0; i < NUM_SEGMENTS; i++) {
+        segmentTable[i].segmentNumber = i;
+        segmentTable[i].base = -1; // No base address initially
+        segmentTable[i].limit = -1; // No limit initially
+    }
+}
+
+void mapSegment(SegmentTableEntry* segmentTable, int segmentNumber, int base, int limit) {
+    segmentTable[segmentNumber].base = base;
+    segmentTable[segmentNumber].limit = limit;
+}
+
+void printSegmentTable(SegmentTableEntry* segmentTable) {
+    printf("Segment Table:\n");
+    printf("Segment Number\tBase\tLimit\n");
+    for (int i = 0; i < NUM_SEGMENTS; i++) {
+        printf("%d\t\t%d\t%d\n", segmentTable[i].segmentNumber, segmentTable[i].base, segmentTable[i].limit);
+    }
+}
+
+int main() {
+    SegmentTableEntry segmentTable[NUM_SEGMENTS];
+
+    initializeSegmentTable(segmentTable);
+
+    // Mapping segments
+    mapSegment(segmentTable, 0, 100, 50);
+    mapSegment(segmentTable, 1, 200, 150);
+    mapSegment(segmentTable, 2, 400, 100);
+
+    printSegmentTable(segmentTable);
+
+    return 0;
+}

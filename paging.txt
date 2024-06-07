@@ -1,0 +1,49 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define PAGE_SIZE 4
+#define NUM_PAGES 4
+#define NUM_FRAMES 8
+
+typedef struct {
+    int pageNumber;
+    int frameNumber;
+    int valid; // 0: invalid, 1: valid
+} PageTableEntry;
+
+void initializePageTable(PageTableEntry* pageTable) {
+    for (int i = 0; i < NUM_PAGES; i++) {
+        pageTable[i].pageNumber = i;
+        pageTable[i].frameNumber = -1; // No frame assigned initially
+        pageTable[i].valid = 0; // Invalid initially
+    }
+}
+
+void mapPageToFrame(PageTableEntry* pageTable, int pageNumber, int frameNumber) {
+    pageTable[pageNumber].frameNumber = frameNumber;
+    pageTable[pageNumber].valid = 1;
+}
+
+void printPageTable(PageTableEntry* pageTable) {
+    printf("Page Table:\n");
+    printf("Page Number\tFrame Number\tValid\n");
+    for (int i = 0; i < NUM_PAGES; i++) {
+        printf("%d\t\t%d\t\t%d\n", pageTable[i].pageNumber, pageTable[i].frameNumber, pageTable[i].valid);
+    }
+}
+
+int main() {
+    PageTableEntry pageTable[NUM_PAGES];
+
+    initializePageTable(pageTable);
+
+    // Mapping pages to frames
+    mapPageToFrame(pageTable, 0, 5);
+    mapPageToFrame(pageTable, 1, 3);
+    mapPageToFrame(pageTable, 2, 7);
+    mapPageToFrame(pageTable, 3, 1);
+
+    printPageTable(pageTable);
+
+    return 0;
+}
